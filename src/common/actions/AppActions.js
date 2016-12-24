@@ -8,8 +8,10 @@ function setCurrentLocation(location) {
 }
 
 const setFlag = flag => ({flag, type: AppActionTypes.SET_APP_FLAGS});
+const setUser = user => ({user, type: AppActionTypes.SET_USER});
 
 module.exports = {
   setCurrentLocation,
-  setFlag
+  setFlag,
+  setUser
 }

@@ -42,12 +42,20 @@ function setAppFlag(state, action) {
   }
 }
 
+function setUser(state, action) {
+  return {
+    ...state,
+    user: action.user
+  }
+}
+
 const actionHandlers = {
   [AppActionTypes.SET_CURRENT_LOCATION] : setCurrentLocation,
   [AppActionTypes.REQUEST_STARTED]      : setFlag('loading', true),
   [AppActionTypes.REQUEST_FAILURE]      : handleFailure,
   [AppActionTypes.REQUEST_SUCCESS]      : setFlag('loading', false),
-  [AppActionTypes.SET_APP_FLAGS]        : setAppFlag
+  [AppActionTypes.SET_APP_FLAGS]        : setAppFlag,
+  [AppActionTypes.SET_USER]             : setUser
 }
 
 module.exports = createReducer(defaultState, actionHandlers);

@@ -244,7 +244,9 @@ var serverConfig = {
     chunkFilename: "[name].js",
   },
   resolve: clientConfig.resolve,
-  // externals: externals,
+  externals: [{
+    "config": "commonjs2 config"
+  }],
   module: clientConfig.module,
   plugins: [
     // Makes some environment variables available to the JS code, for example:

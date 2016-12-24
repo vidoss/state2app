@@ -1,0 +1,19 @@
+@import "~react-toolbox/lib/globals";
+@import "~react-toolbox/lib/input/config";
+
+.url {
+  display: flex;
+
+  .dropdown {
+    width: $unit * 8;
+  }
+
+  .prefix {
+    margin: 3 * $unit 0 2 * $unit $unit;
+    border-bottom: 1px solid $input-text-bottom-border-color;
+  }
+
+  .urlInput {
+    flex: 1;
+  }
+}

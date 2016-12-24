@@ -21,7 +21,7 @@ class StandardLayout extends React.Component {
 
     return (
       <Layout>
-        <NavDrawer fixed active={showNav} onOverlayClick={ this.handleToggle }>
+        <NavDrawer fixed pinned={showNav} onOverlayClick={ this.handleToggle }>
         </NavDrawer>
         <Panel>
           <AppBar leftIcon="menu" onLeftIconClick={this.handleToggle}>

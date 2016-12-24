@@ -15,7 +15,7 @@ const contentSecurityPolicy = {
     .concat(!isProduction && '\'unsafe-eval\'')
     .filter(Boolean),
 
-  connectSrc: [cspSelf]
+  connectSrc: [cspSelf, 'https://www.googleapis.com']
     .concat(!isProduction && `http://localhost:${DEV_SERVER_PORT}`)
     .concat(!isProduction && `ws://localhost:${DEV_SERVER_PORT}`)
     .filter(Boolean),
@@ -52,9 +52,26 @@ const devServer = {
   port: DEV_SERVER_PORT
 };
 
+const firebase = {
+  config: {
+    apiKey: "AIzaSyBOEI_MFZMKyDfwGq4GRqd77drW0f54jkM",
+    authDomain: "state2app.firebaseapp.com",
+    databaseURL: "https://state2app.firebaseio.com",
+    storageBucket: "state2app.appspot.com",
+    messagingSenderId: "1079630100"
+  }
+};
+
+const fonts = [
+  'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
+  'https://fonts.googleapis.com/icon?family=Material+Icons'
+]
+
 module.exports = {
   contentSecurityPolicy,
   server,
   devServer,
-  messages
+  messages,
+  firebase,
+  fonts
 }
