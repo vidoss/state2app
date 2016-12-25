@@ -6,8 +6,10 @@ const {StateView} = require('../components/stateview');
 const {StateSteps} = require('../components/statesteps');
 const theme = require('./AppMain.scss');
 const {connect} = require('react-redux');
+const UserHome = require('./UserHome');
+const {UserSelector} = require('../selectors');
 
-const UserPlayground = () => (
+const AppBuilder = () => (
   <Layout theme={theme}>
     <NavDrawer fixed pinned={true} >
       <StateView />
@@ -26,7 +28,8 @@ const AppMain = (props) => {
           <Match pattern="/" exactly render={
             () => user ? <Redirect to={`/user/${user.uid}`} /> : null
           } />
-          <Match pattern="/user/:userId" component={UserPlayground} />
+          <Match pattern="/user/:userId" component={UserHome} />
+          <Match pattern="/app/:appId" component={AppBuilder} />
         </StandardLayout>
       </BrowserRouter>
     )
@@ -34,7 +37,7 @@ const AppMain = (props) => {
 
 function mapStateToProps(state) {
   return {
-    user: state.app.user
+    user: UserSelector(state)
   }
 }
 

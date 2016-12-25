@@ -6,12 +6,28 @@ const ReactDOM = require('react-dom');
 const {Provider} = require('react-redux');
 const { loadJsonFromScript } = require('./common/utils/LoadingUtil');
 const {setMessages} = require('./common/utils/MessageUtil');
-const {AppActions} = require('./common/actions');
+const {UserActions} = require('./actions');
 require('./styles'); // Load styles before AppMain
 
 const AppMain = require('./containers/AppMain');
 const reducers = require('./reducers');
 const firebase = require('firebase');
+
+function initFirebase(dispatch) {
+  firebase.initializeApp(loadJsonFromScript('firebase-config'));
+  const auth = firebase.auth();
+  auth.onAuthStateChanged(
+    (user) => user ? dispatch(UserActions.setUser(user))
+                   : auth.signInAnonymously().then(
+                     anonUser => {
+                       firebase.database().ref(`users/${anonUser.uid}`).set({
+                         uid: anonUser.uid
+                       });
+                       dispatch(UserActions.setUser(anonUser));
+                     }
+                   )
+  );
+}
 
 const logger = loggerMiddleware({logger: console});
 
@@ -27,15 +43,8 @@ const finalCreateStore = applyMiddleware(
 
 const store = finalCreateStore(reducer, initialState);
 
+initFirebase(store.dispatch);
 setMessages(loadJsonFromScript('messages-bundle'));
-firebase.initializeApp(loadJsonFromScript('firebase-config'));
-const auth = firebase.auth();
-auth.onAuthStateChanged(
-  (user) => user ? store.dispatch(AppActions.setUser(user))
-                 : auth.signInAnonymously().then(
-                   anonUser => store.dispatch(AppActions.setUser(anonUser))
-                 )
-)
 
 ReactDOM.render((
   <Provider store={store}>

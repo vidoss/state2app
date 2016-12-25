@@ -10,17 +10,27 @@ const isProduction = process.env.NODE_ENV === 'production';
 const contentSecurityPolicy = {
   defaultSrc: [cspSelf],
 
-  scriptSrc: [cspSelf]
+  scriptSrc: [
+      cspSelf,
+      'https://*.firebaseio.com'
+    ]
     .concat(!isProduction && `http://localhost:${DEV_SERVER_PORT}`)
     .concat(!isProduction && '\'unsafe-eval\'')
     .filter(Boolean),
 
-  connectSrc: [cspSelf, 'https://www.googleapis.com']
+  connectSrc: [
+      cspSelf,
+      'https://*.googleapis.com',
+      'wss://*.firebaseio.com'
+    ]
     .concat(!isProduction && `http://localhost:${DEV_SERVER_PORT}`)
     .concat(!isProduction && `ws://localhost:${DEV_SERVER_PORT}`)
     .filter(Boolean),
 
-  styleSrc: [cspSelf, 'https://fonts.googleapis.com']
+  styleSrc: [
+      cspSelf,
+      'https://fonts.googleapis.com',
+    ]
     .concat(!isProduction && 'blob:')
     .concat(!isProduction && `http://localhost:${DEV_SERVER_PORT}`)
     .filter(Boolean),
