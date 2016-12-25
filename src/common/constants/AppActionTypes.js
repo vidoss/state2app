@@ -5,6 +5,5 @@ module.exports = keyMirror({
   REQUEST_SUCCESS: null,
   REQUEST_STARTED: null,
   REQUEST_FAILURE: null,
-  SET_APP_FLAGS: null,
-  SET_USER: null
+  SET_APP_FLAGS: null
 });

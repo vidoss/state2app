@@ -1,24 +1,11 @@
 const React = require('react');
 const {BrowserRouter, Match, Redirect} = require('react-router');
 const StandardLayout  = require('../common/containers/StandardLayout');
-const {Layout, Panel, NavDrawer} = require('react-toolbox');
-const {StateView} = require('../components/stateview');
-const {StateSteps} = require('../components/statesteps');
-const theme = require('./AppMain.scss');
 const {connect} = require('react-redux');
 const UserHome = require('./UserHome');
+const AppBuilder = require('./AppBuilder');
 const {UserSelector} = require('../selectors');
 
-const AppBuilder = () => (
-  <Layout theme={theme}>
-    <NavDrawer fixed pinned={true} >
-      <StateView />
-    </NavDrawer>
-    <Panel>
-      <StateSteps />
-    </Panel>
-  </Layout>
-);
 
 const AppMain = (props) => {
     const {user} = props;

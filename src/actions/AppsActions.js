@@ -11,7 +11,30 @@ const removeApp = (key) => ({
   type: AppsActionTypes.REMOVE_APP
 });
 
+const appModuleAdded = (module, uid, val) => ({
+  uid,
+  module,
+  val,
+  type: AppsActionTypes.APP_MODULE_ADDED
+});
+
+const appModuleRemoved = (module, uid) => ({
+  uid,
+  module,
+  type: AppsActionTypes.APP_MODULE_REMOVED
+})
+
+const appModuleChanged = (module, uid, val) => ({
+  uid,
+  module,
+  val,
+  type: AppsActionTypes.APP_MODULE_CHANGED
+})
+
 module.exports = {
   addApp,
-  removeApp
+  removeApp,
+  appModuleAdded,
+  appModuleRemoved,
+  appModuleChanged
 }
