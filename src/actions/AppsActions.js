@@ -31,9 +31,15 @@ const appModuleChanged = (module, uid, val) => ({
   type: AppsActionTypes.APP_MODULE_CHANGED
 })
 
+const setCurrent = (current) => ({
+  current,
+  type: AppsActionTypes.SET_CURRENT
+})
+
 module.exports = {
   addApp,
   removeApp,
+  setCurrent,
   appModuleAdded,
   appModuleRemoved,
   appModuleChanged

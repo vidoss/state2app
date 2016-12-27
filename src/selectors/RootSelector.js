@@ -1,7 +1,24 @@
+const {createSelector} = require('reselect');
+
 const UserSelector = state => state.user.user;
-const AppsSelector = state => Object.keys(state.apps.apps).map( appId => state.apps.apps[appId]);
+const AppsSelector = state => state.apps.apps;
+const CurrentSelector = state => state.apps.current;
+
+const CurrentAppSelector = createSelector(
+  CurrentSelector,
+  AppsSelector,
+  ({appId}, apps) => apps[appId] || {}
+);
+
+const AppsListSelector = createSelector(
+  AppsSelector,
+  apps => Object.keys(apps).map(uid => apps[uid])
+)
 
 module.exports = {
   UserSelector,
-  AppsSelector
+  AppsSelector,
+  CurrentSelector,
+  CurrentAppSelector,
+  AppsListSelector
 }

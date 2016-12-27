@@ -1,9 +1,15 @@
 const {
   UserSelector,
-  AppsSelector
+  AppsSelector,
+  CurrentSelector,
+  CurrentAppSelector,
+  AppsListSelector
 } = require('./RootSelector');
 
 module.exports = {
   UserSelector,
-  AppsSelector
+  AppsSelector,
+  CurrentSelector,
+  CurrentAppSelector,
+  AppsListSelector
 }

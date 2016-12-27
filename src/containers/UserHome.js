@@ -5,7 +5,7 @@ const theme = require('./UserHome.scss');
 const {connect} = require('react-redux');
 const firebase = require('firebase');
 const {AppsActions} = require('../actions');
-const {UserSelector, AppsSelector} = require('../selectors');
+const {UserSelector, AppsListSelector} = require('../selectors');
 
 const AppCard = (props) => {
   const {app} = props;
@@ -65,7 +65,7 @@ class UserHome extends React.Component {
 function mapStateToProps(state) {
   return {
     user: UserSelector(state),
-    apps: AppsSelector(state)
+    apps: AppsListSelector(state)
   }
 }
 

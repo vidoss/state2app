@@ -3,18 +3,18 @@ const {StepWizard, Step} = require('../../common/components/stepwizard');
 const {getMessage} = require('../../common/utils/MessageUtil');
 const {ActionStep} = require('../actionstep');
 
-class StateSteps extends React.Component {
-  render() {
-    return (
-      <StepWizard>
-        <Step
-          title={getMessage('label.actions','Redux Actions')}
-          >
-            <ActionStep />
-        </Step>
-      </StepWizard>
-    )
-  }
+const StateSteps = props => {
+  const {app} = props;
+
+  return (
+    <StepWizard>
+      <Step
+        title={getMessage('label.actions','Redux Actions')}
+        >
+          <ActionStep appId={app.uid} actions={app.actions} />
+      </Step>
+    </StepWizard>
+  )
 }
 
 module.exports = StateSteps;
