@@ -2,6 +2,8 @@ const React = require('react');
 const {getMessage} = require('../../common/utils/MessageUtil');
 const {Editor, EditorState} = require('draft-js');
 const theme = require('./AjaxAction.scss');
+const {HTTPVerbs} = require('./Constants');
+const AutoUpdate = require('./AutoUpdate');
 const {
   Card,
   CardTitle,
@@ -10,7 +12,7 @@ const {
   Dropdown
 } = require('react-toolbox');
 
-const verbs = ['GET','POST','PUT','DELETE'].map( verb => ({value: verb, label: verb}));
+const verbs = Object.keys(HTTPVerbs).map( verb => ({value: verb, label: verb}));
 
 class AjaxAction extends React.Component {
   state = {
@@ -19,9 +21,34 @@ class AjaxAction extends React.Component {
 
   onChange = (editorState) => this.setState({editorState});
 
+  handleUrlChange = (url) => {
+    const {uid, action, onChange} = this.props;
+    onChange(uid, AutoUpdate.onUrlChange({...action, url}));
+  }
+
+  handleVerbChange = (verb) => {
+    const {uid, action, onChange} = this.props;
+    onChange(uid, AutoUpdate.onUrlChange({...action, verb}));
+  }
+
+  handleActionNameChange = (actionName) => {
+    const {uid, action, onChange} = this.props;
+    onChange(uid, {...action, actionName, actionNameChanged: true});
+  }
+
+  handleActionTypeChange = (type) => {
+    const {uid, action, onChange} = this.props;
+    onChange(uid, {...action, type, typeChange: true});
+  }
+
   render() {
-    const {url, handleUrlChange} = this.props;
-    const hint = !url && getMessage('action.url.hint','customer/${customerId}'); // eslint-disable-line  no-template-curly-in-string
+    const {action} = this.props;
+    const {
+      url = '',
+      verb = 'GET',
+      type = ''
+    } = action;
+    const hint = getMessage('action.url.hint','customer/${customerId}'); // eslint-disable-line  no-template-curly-in-string
 
     return (
       <div>
@@ -32,20 +59,25 @@ class AjaxAction extends React.Component {
           />
           <CardText>
             <div className={theme.url} >
-              <Dropdown value="GET" source={verbs} theme={theme}/>
+              <Dropdown value={verb} source={verbs} theme={theme} onChange={this.handleVerbChange}/>
               <div className={theme.prefix}>
                 /api/
               </div>
               <Input
                 type="text"
                 className={theme.urlInput}
-                onChange={handleUrlChange}
+                onChange={this.handleUrlChange}
                 value={url}
                 label={getMessage('action.url','<Enter URL>')}
                 hint={hint} // eslint-disable-line  no-template-curly-in-string
                 />
             </div>
-            <Input type="text" label={getMessage('action.name','Function Name:')} />
+            <Input
+              type="text"
+              label={getMessage('action.type','Action Type:')}
+              onChange={this.handleActionTypeChange}
+              value={type}
+              />
             <Editor editorState={this.state.editorState} onChange={this.onChange} />
           </CardText>
         </Card>

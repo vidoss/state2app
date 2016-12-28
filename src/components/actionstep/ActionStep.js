@@ -2,39 +2,55 @@ const React = require('react');
 const AjaxAction = require('./AjaxAction');
 const {getMessage} = require('../../common/utils/MessageUtil');
 const firebase = require('firebase');
-const ActionKind = require('./ActionKind');
+const {ActionKind, HTTPVerbs} = require('./Constants');
 
 const {
   Button
 } = require('react-toolbox');
 
+const defaultAction = {
+  simple: {
+    current: true,
+    type: ''
+  },
+  ajax: {
+    url: '',
+    verb: HTTPVerbs.GET,
+    current: true,
+    type: ''
+  }
+}
 
 class ActionStep extends React.Component {
 
-  addAction = (type) => {
+  addAction = (actionKind, actionDefaults) => {
     const {appId} = this.props;
     const fdb = firebase.database();
     const actionRef = fdb.ref(`apps/${appId}/actions`).push();
 
     actionRef.set(true, () => {
       fdb.ref(`actions/${actionRef.key}`).set({
-        type,
+        actionKind,
         appId,
-        current: true
+        ...actionDefaults
       });
     })
   }
 
-  handleAddAction = () => this.addAction(ActionKind.SIMPLE_ACTION)
-  handleAddAjaxAction = () => this.addAction(ActionKind.AJAX_ACTION)
+  handleAddAction = () => this.addAction(ActionKind.SIMPLE_ACTION, defaultAction.simple)
+  handleAddAjaxAction = () => this.addAction(ActionKind.AJAX_ACTION, defaultAction.ajax)
 
   handleOnChange = (uid, action) => {
-    const {appId} = this.props;
-    if (!uid || !appId) {
-      console.error('ActionSteps.handleOnChange() - appId or actionId missing', appId, uid);
+    if (!uid) {
+      console.error('ActionSteps.handleOnChange() - Empty uid', uid);
       return;
     }
-    firebase.database().ref(`apps/${appId}/actions/${uid}`).set(action);
+    // Change any indefined to empty string, fb fails on undefined.
+    const cleanAction = Object.keys(action).reduce(
+      (actionObj, key) => ({...actionObj, [key]: action[key] === void 0 ? '' : action[key]}),
+      {}
+    );
+    firebase.database().ref(`actions/${uid}`).set(cleanAction);
   }
 
   render() {
@@ -45,7 +61,7 @@ class ActionStep extends React.Component {
         <div>
           {
             Object.keys(actions || {}).map(
-              uid => <AjaxAction key={uid} actions={actions[uid]} onChange={this.handleOnChange}/>
+              uid => <AjaxAction key={uid} uid={uid} action={actions[uid]} onChange={this.handleOnChange}/>
             )
           }
         </div>

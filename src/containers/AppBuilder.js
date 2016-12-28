@@ -27,7 +27,7 @@ class AppBuilder extends React.Component {
     this.dbrefs[module].on('child_added', data => {
       this.dbrefs[module_abs] = database.ref(`${module}/${data.key}`);
       this.dbrefs[module_abs].once('value').then( mod => handleModuleAdded(module, data.key, mod.val()))
-      this.dbrefs[module_abs].on('child_changed', data => handleModuleChanged(module, data.key, data.val()))
+      this.dbrefs[module_abs].on('child_changed', attr => handleModuleChanged(module, data.key, {[attr.key]: attr.val()}))
     });
     this.dbrefs[module].on('child_removed', data => handleModuleRemoved(module, data.key));
   };

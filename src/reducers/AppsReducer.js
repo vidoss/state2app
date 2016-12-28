@@ -1,5 +1,6 @@
 const {AppsActionTypes} = require('../constants');
 const {createReducer} = require('../common/utils/ReducerUtil');
+const _get = require('lodash.get');
 
 const defaultState = {
   apps: {},
@@ -44,14 +45,10 @@ function setCurrent(state, action) {
 
 function appModuleAdded(state, action) {
   const {uid, val, module} = action;
-  const appId = state.current.appId;
+  const {appId} = state.current;
 
-  if (!appId) {
-    console.warn('AppsReducer.appModuleAdded() No curren tappId!!');
-    return state;
-  }
+  const currModule = _get(state, `apps.${appId}.${module}`, {});
 
-  const currModule = state.apps[appId][module] || {};
   return {
     ...state,
     apps: {
@@ -67,11 +64,37 @@ function appModuleAdded(state, action) {
   }
 }
 
+function appModuleChanged(state, action) {
+  const {uid, val, module} = action;
+  const {appId} = state.current;
+
+  const currModule = _get(state, `apps.${appId}.${module}`, {});
+  const currAttr = _get(state, `apps.${appId}.${module}.${uid}`, {});
+
+  return {
+    ...state,
+    apps: {
+      ...state.apps,
+      [appId]: {
+        ...state.apps[appId],
+        [module]: {
+          ...currModule,
+          [uid]: {
+            ...currAttr,
+            ...val
+          }
+        }
+      }
+    }
+  }
+}
+
 const actionHandlers = {
   [AppsActionTypes.ADD_APP]              : addApp,
   [AppsActionTypes.REMOVE_APP]           : removeApp,
   [AppsActionTypes.SET_CURRENT]          : setCurrent,
-  [AppsActionTypes.APP_MODULE_ADDED]     : appModuleAdded
+  [AppsActionTypes.APP_MODULE_ADDED]     : appModuleAdded,
+  [AppsActionTypes.APP_MODULE_CHANGED]   : appModuleChanged
 }
 
 module.exports = createReducer(defaultState, actionHandlers);
