@@ -1,5 +1,5 @@
 const keymirror = require('keymirror');
-
+const apiUrlPrefix = '/api/';
 const ActionKind = keymirror({
   SIMPLE_ACTION: null,
   AJAX_ACTION:   null
@@ -11,12 +11,6 @@ const HTTPVerbs = keymirror({
   PUT: null,
   DELETE: null
 });
-
-const AjaxActionTypeSuffix = [
-  'FETCH',
-  'SUCCESS',
-  'FAILURE'
-]
 
 const AjaxActionTemplate = `
   const <%= actionName %> = createAction(<%= type %>, WebAPI.<%= actionName %>})
@@ -46,7 +40,7 @@ const WebApiTemplate = `
 module.exports = {
   ActionKind,
   HTTPVerbs,
-  AjaxActionTypeSuffix,
   AjaxActionTemplate,
-  WebApiTemplate
+  WebApiTemplate,
+  apiUrlPrefix
 }

@@ -1,8 +1,8 @@
 const React = require('react');
 const {getMessage} = require('../../common/utils/MessageUtil');
-const {Editor, EditorState} = require('draft-js');
+const {Editor, EditorState, ContentState} = require('draft-js');
 const theme = require('./AjaxAction.scss');
-const {HTTPVerbs} = require('./Constants');
+const {HTTPVerbs, apiUrlPrefix} = require('./Constants');
 const AutoUpdate = require('./AutoUpdate');
 const {
   Card,
@@ -16,7 +16,7 @@ const verbs = Object.keys(HTTPVerbs).map( verb => ({value: verb, label: verb}));
 
 class AjaxAction extends React.Component {
   state = {
-    editorState: EditorState.createEmpty()
+    editorState: EditorState.createWithContent(ContentState.createFromText(''))
   };
 
   onChange = (editorState) => this.setState({editorState});
@@ -61,7 +61,7 @@ class AjaxAction extends React.Component {
             <div className={theme.url} >
               <Dropdown value={verb} source={verbs} theme={theme} onChange={this.handleVerbChange}/>
               <div className={theme.prefix}>
-                /api/
+                {apiUrlPrefix}
               </div>
               <Input
                 type="text"
