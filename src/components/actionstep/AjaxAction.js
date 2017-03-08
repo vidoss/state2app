@@ -1,34 +1,56 @@
 const React = require('react');
 const {getMessage} = require('../../common/utils/MessageUtil');
-const {Editor, EditorState, ContentState} = require('draft-js');
+const {EditorState, ContentState, convertFromRaw, convertToRaw} = require('draft-js');
+const {CodeEditor} = require('../../common/components/codeeditor');
 const theme = require('./AjaxAction.scss');
-const {HTTPVerbs, apiUrlPrefix} = require('./Constants');
-const AutoUpdate = require('./AutoUpdate');
+const AjaxDecorator = require('./AjaxDecorator');
+const {
+  webApiTemplate,
+  ajaxActionTemplate,
+  actionTypesTemplate
+} = require('./Constants');
+// const AutoSuggest = require('./AutoSuggest');
 const {
   Card,
   CardTitle,
-  CardText,
-  Input,
-  Dropdown
+  CardText
 } = require('react-toolbox');
 
-const verbs = Object.keys(HTTPVerbs).map( verb => ({value: verb, label: verb}));
 
 class AjaxAction extends React.Component {
+
   state = {
-    editorState: EditorState.createWithContent(ContentState.createFromText(''))
+    webApiState: EditorState.createWithContent(ContentState.createFromBlockArray(webApiTemplate)),
+    actionTypesState: EditorState.createWithContent(ContentState.createFromBlockArray(actionTypesTemplate), AjaxDecorator),
+    ajaxActionState: EditorState.createWithContent(ContentState.createFromBlockArray(ajaxActionTemplate))
   };
 
-  onChange = (editorState) => this.setState({editorState});
+  updateEditorState = (action) => {
+      const {webApiCode, actionTypesCode, ajaxActionCode} = action;
+      const {webApiState, actionTypesState, ajaxActionState} = this.state;
+      if (webApiCode) {
+        webApiState.set(EditorState.createWithContent(convertFromRaw(JSON.parse(webApiCode))))
+      }
+      if (actionTypesCode) {
+        actionTypesState.set(EditorState.createWithContent(convertFromRaw(JSON.parse(actionTypesCode)), AjaxDecorator))
+      }
+      if (ajaxActionCode) {
+        ajaxActionState.set(EditorState.createWithContent(convertFromRaw(JSON.parse(ajaxActionCode))))
+      }
+  }
 
+  componentWillMount = () => this.updateEditorState(this.props.action);
+  componentWillReceiveProps = (props) => this.updateEditorState(props.action);
+
+/*
   handleUrlChange = (url) => {
     const {uid, action, onChange} = this.props;
-    onChange(uid, AutoUpdate.onUrlChange({...action, url}));
+    onChange(uid, AutoSuggest.onUrlChange({...action, url}));
   }
 
   handleVerbChange = (verb) => {
     const {uid, action, onChange} = this.props;
-    onChange(uid, AutoUpdate.onUrlChange({...action, verb}));
+    onChange(uid, AutoSuggest.onUrlChange({...action, verb}));
   }
 
   handleActionNameChange = (actionName) => {
@@ -40,45 +62,28 @@ class AjaxAction extends React.Component {
     const {uid, action, onChange} = this.props;
     onChange(uid, {...action, type, typeChange: true});
   }
+*/
+  handleWebApiChange = (webApiState) => this.props.onChange(this.props.uid, {...this.props.action, webApiCode: JSON.stringify(convertToRaw(webApiState.getCurrentContent()))});
+  handleActionTypesChange = (actionTypesState) => this.props.onChange(this.props.uid, {...this.props.action, actionTypesCode: JSON.stringify(convertToRaw(actionTypesState.getCurrentContent()))});
+  handleAjaxActionChange = (ajaxActionState) => this.props.onChange(this.props.uid, {...this.props.action, ajaxActionCode: JSON.stringify(convertToRaw(ajaxActionState.getCurrentContent()))});
+
 
   render() {
-    const {action} = this.props;
-    const {
-      url = '',
-      verb = 'GET',
-      type = ''
-    } = action;
-    const hint = getMessage('action.url.hint','customer/${customerId}'); // eslint-disable-line  no-template-curly-in-string
-
+    const {webApiState, actionTypesState, ajaxActionState} = this.state;
     return (
       <div>
         <Card>
           <CardTitle
             title={getMessage('fetch.action','Server Fetch Action')}
-            subtitle={getMessage('fetch.action.subtitle','Enter server fetch action details')}
+            subtitle={getMessage('fetch.action.subtitle','Edit action code for server fetch action')}
           />
           <CardText>
-            <div className={theme.url} >
-              <Dropdown value={verb} source={verbs} theme={theme} onChange={this.handleVerbChange}/>
-              <div className={theme.prefix}>
-                {apiUrlPrefix}
-              </div>
-              <Input
-                type="text"
-                className={theme.urlInput}
-                onChange={this.handleUrlChange}
-                value={url}
-                label={getMessage('action.url','<Enter URL>')}
-                hint={hint} // eslint-disable-line  no-template-curly-in-string
-                />
-            </div>
-            <Input
-              type="text"
-              label={getMessage('action.type','Action Type:')}
-              onChange={this.handleActionTypeChange}
-              value={type}
-              />
-            <Editor editorState={this.state.editorState} onChange={this.onChange} />
+            <div className={theme.file}>{getMessage('action.types', 'Action Types')} :</div>
+            <CodeEditor editorState={actionTypesState} onChange={this.handleActionTypesChange} />
+            <div className={theme.file}>{getMessage('redux.actions', 'Redux Actions')} :</div>
+            <CodeEditor editorState={ajaxActionState} onChange={this.handleAjaxActionChange} />
+            <div className={theme.file}>{getMessage('web.api','WebAPI (Client)')} :</div>
+            <CodeEditor editorState={webApiState} onChange={this.handleWebApiChange} />
           </CardText>
         </Card>
       </div>

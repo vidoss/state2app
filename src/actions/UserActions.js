@@ -1,10 +1,13 @@
-const {UserActionTypes} = require('../constants');
+const { createActions } = require('redux-actions');
 
-const setUser = user => ({
-  user,
-  type: UserActionTypes.SET_USER
+module.exports = createActions({
+
+  SET_USER: [
+    user => firebase => firebase.database()
+                            .ref(`users/${user.uid}`)
+                            .update({uid: user.uid})
+                            .then(() => user),
+    () => ({isFirebase: true})
+  ]
+
 });
-
-module.exports = {
-  setUser
-}

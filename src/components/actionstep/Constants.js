@@ -1,4 +1,6 @@
 const keymirror = require('keymirror');
+const {convertFromHTML} = require('draft-js');
+
 const apiUrlPrefix = '/api/';
 const ActionKind = keymirror({
   SIMPLE_ACTION: null,
@@ -12,35 +14,42 @@ const HTTPVerbs = keymirror({
   DELETE: null
 });
 
-const AjaxActionTemplate = `
-  const <%= actionName %> = createAction(<%= type %>, WebAPI.<%= actionName %>})
-`
+const actionTypesTemplate = convertFromHTML(`
+<pre>
+{
+  FETCH_: 'FETCH_'
+};
+</pre>
+`);
 
-const WebApiTemplate = `
-  <%
-    const expRegex = /\${([^}]+)?}/;
-    let args = [];
-    let match;
-    while( match = expRegex.exec('<%= url%>') {
-      args.push(match[1]);
-    }
-    let argsList = args.join(',')
-  %>
+const ajaxActionTemplate = convertFromHTML(`
+<pre>
+const createAction = require('redux-actions');
+const getCustomerById = createAction(
+  ActionTypes.FETCH_,
+  WebAPI.get
+);
+</pre>
+`);
 
-  function <%= actionName %>(<%= argsList) %>) {
-    return request.<%= verb %>(\`<%= url %>\`)
-            .type('json')
-            .accept('json')
-            <% if (verb !== 'GET') { %>
-              .send({<%= argsList %>})
-            <% } %>
+const webApiTemplate = convertFromHTML(`
+<pre>
+const request = require('superagent');
+const WebAPI = {
+  get() {
+    return request.get('/api/')
+      .type('json')
+      .accept('json')
   }
-`
+};
+</pre>
+`);
 
 module.exports = {
   ActionKind,
   HTTPVerbs,
-  AjaxActionTemplate,
-  WebApiTemplate,
-  apiUrlPrefix
+  apiUrlPrefix,
+  webApiTemplate,
+  actionTypesTemplate,
+  ajaxActionTemplate
 }

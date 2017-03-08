@@ -70,7 +70,6 @@ function appModuleChanged(state, action) {
 
   const currModule = _get(state, `apps.${appId}.${module}`, {});
   const currAttr = _get(state, `apps.${appId}.${module}.${uid}`, {});
-
   return {
     ...state,
     apps: {

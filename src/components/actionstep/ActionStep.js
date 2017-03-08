@@ -2,7 +2,7 @@ const React = require('react');
 const AjaxAction = require('./AjaxAction');
 const {getMessage} = require('../../common/utils/MessageUtil');
 const firebase = require('firebase');
-const {ActionKind, HTTPVerbs} = require('./Constants');
+const {ActionKind} = require('./Constants');
 
 const {
   Button
@@ -14,8 +14,9 @@ const defaultAction = {
     type: ''
   },
   ajax: {
-    url: '',
-    verb: HTTPVerbs.GET,
+    webApiCode: '',
+    ajaxActionCode: '',
+    actionTypesCode: '',
     current: true,
     type: ''
   }

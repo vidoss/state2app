@@ -6,7 +6,6 @@ const UserHome = require('./UserHome');
 const AppBuilder = require('./AppBuilder');
 const {UserSelector} = require('../selectors');
 
-
 const AppMain = (props) => {
     const {user} = props;
     return (

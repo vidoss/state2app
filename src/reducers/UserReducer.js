@@ -1,19 +1,13 @@
-const {UserActionTypes} = require('../constants');
-const {createReducer} = require('../common/utils/ReducerUtil');
+const {handleActions} = require('redux-actions');
 
 const defaultState = {
 };
 
-function setUser(state, action) {
-  const {user} = action;
-  return {
+module.exports = handleActions({
+
+  SET_USER: (state, action) => ({
     ...state,
-    user
-  }
-}
+    user: action.payload
+  })
 
-const actionHandlers = {
-  [UserActionTypes.SET_USER]             : setUser
-}
-
-module.exports = createReducer(defaultState, actionHandlers);
+}, defaultState)

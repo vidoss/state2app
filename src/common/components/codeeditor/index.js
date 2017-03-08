@@ -1,4 +1,4 @@
-const CodeEditor = require('CodeEditor');
+const CodeEditor = require('./CodeEditor');
 
 module.exports = {
   CodeEditor

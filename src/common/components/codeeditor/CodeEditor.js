@@ -1,6 +1,6 @@
 const React = require('react');
 const Draft = require('draft-js');
-const CodeUtils = require('draft-js-code');
+const CodeUtils = require('./draft-js-code');
 
 class CodeEditor extends React.Component {
 
@@ -25,7 +25,6 @@ class CodeEditor extends React.Component {
     keyBindingFn = (e) => {
         const {editorState} = this.props;
         let command;
-
         if (CodeUtils.hasSelectionInBlock(editorState)) {
             command = CodeUtils.getKeyBinding(e);
         }
@@ -37,26 +36,26 @@ class CodeEditor extends React.Component {
     }
 
     handleReturn = (e) => {
-        const {editorState} = this.props;
+        const {editorState, onChange} = this.props;
 
         if (!CodeUtils.hasSelectionInBlock(editorState)) {
             return;
         }
 
-        this.onChange(
+        onChange(
             CodeUtils.handleReturn(e, editorState)
         );
         return true;
     }
 
     handleTab = (e) => {
-        const {editorState} = this.props;
+        const {editorState, onChange} = this.props;
 
         if (!CodeUtils.hasSelectionInBlock(editorState)) {
             return;
         }
 
-        this.onChange(
+        onChange(
             CodeUtils.handleTab(e, editorState)
         );
     }
@@ -65,13 +64,13 @@ class CodeEditor extends React.Component {
       const {editorState, onChange} = this.props;
 
       return <Draft.Editor
-          editorState={editorState}
-          onChange={onChange}
-          keyBindingFn={this.keyBindingFn}
-          handleKeyCommand={this.handleKeyCommand}
-          handleReturn={this.handleReturn}
-          onTab={this.handleTab}
-      />;
+                editorState={editorState}
+                onChange={onChange}
+                keyBindingFn={this.keyBindingFn}
+                handleKeyCommand={this.handleKeyCommand}
+                handleReturn={this.handleReturn}
+                onTab={this.handleTab}
+            />;
     }
 }
 
